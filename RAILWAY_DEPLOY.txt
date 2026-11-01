@@ -1,0 +1,32 @@
+FORWARD BOT v10 — Railway Deploy (Worker)
+
+1) New Project → Empty Project → Deploy from GitHub OR "Empty Service" + upload zip
+
+2) Variables (Settings → Variables) — REQUIRED:
+   API_ID=your_api_id
+   API_HASH=your_api_hash
+   BOT_TOKEN=123456:ABC...
+   SESSION_STRING=your_pyrogram_session_string
+   OWNER_ID=your_telegram_user_id
+   TARGET_CHANNEL=-100xxxxxxxxxx   (optional default receiver)
+
+3) Start command (if not auto):
+   python FORWARD_BOT_v10.py
+
+4) Service type: Worker (no public HTTP needed)
+   Railway → Settings → Deploy → ensure startCommand is the python file
+
+5) After deploy: open bot on Telegram → /start
+
+Notes:
+- This is a long-running worker (asyncio.Event().wait()) — not a web server.
+- Free tier may sleep; paid worker stays up.
+- Session string must be user account that can join source + has access to receiver.
+- Bot must be admin in receiver channel for copy fallback.
+
+CRITICAL (Termux / any machine with old pyrogram):
+  pip uninstall pyrogram -y
+  pip uninstall pyrofork -y
+  pip install --upgrade --force-reinstall "pyrofork>=2.3.69" tgcrypto aiohttp
+  # Old pyrogram causes: ValueError unknown constructor 0x2a3dc7ac / KeyError TL
+  # pyrofork replaces it (same import name) and has current Telegram TL schema.
